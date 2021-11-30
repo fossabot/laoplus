@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name        LAOPLUS
+// @name        LAOPLUS Lite
 // @namespace   net.mizle
 // @version     process.env.VERSION
 // @author      process.env.AUTHOR
 // @description ブラウザ版ラストオリジンのプレイを支援する Userscript
-// @homepageURL https://github.com/eai04191/laoplus
+// @homepageURL https://github.com/eai04191/laoplus/tree/lite
 // @supportURL  https://github.com/eai04191/laoplus/issues
 // @run-at      document-idle
 // @match       https://pc-play.games.dmm.co.jp/play/lastorigin_r/*
