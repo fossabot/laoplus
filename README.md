@@ -45,6 +45,10 @@ PWA としてインストールするとより便利に使えます
 
 LAOPLUS Lite を利用したことによりアカウント BAN などの被害が発生したとしても、開発者は一切の責任を負いません。
 
+### ⚠️LAOPLUS と LAOPLUS Lite を同時に使用しないでください
+
+競合する上、LAOPLUS Lite の機能はすべて LAOPLUS に含まれているため無意味です。
+
 <details>
 <summary><b>インストール手順</b></summary>
 
