@@ -7,18 +7,9 @@ type DeepPartial<T> = {
 
 const defaultConfig = {
     features: {
-        discordNotification: {
+        statsReporter: {
             enabled: false,
-            webhookURL: "",
-            interests: {
-                pcDrop: true,
-                itemDrop: true,
-                exploration: true,
-            },
-        },
-        wheelAmplify: {
-            enabled: true,
-            ratio: 10,
+            endpointURL: "",
         },
     },
 };

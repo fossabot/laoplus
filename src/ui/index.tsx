@@ -12,7 +12,7 @@ const App: React.VFC = () => {
 
 export const initUi = () => {
     const root = document.createElement("div");
-    root.id = "laoplus-root";
+    root.id = "laoplus-stats-reporter-root";
     ReactDOM.render(<App />, root);
     document.body.appendChild(root);
 };

@@ -5,20 +5,28 @@ const style =
 export const log = {
     debug: (moduleName: string, ...args: unknown[]) => {
         console.debug(
-            `%c🐞LAOPLUS :: ${moduleName}`,
+            `%c🐞LAOPLUS Stats Reporter :: ${moduleName}`,
             style,
             ..._.cloneDeep(args)
         );
     },
     log: (moduleName: string, ...args: unknown[]) => {
-        console.log(`%cLAOPLUS :: ${moduleName}`, style, ..._.cloneDeep(args));
+        console.log(
+            `%cLAOPLUS Stats Reporter :: ${moduleName}`,
+            style,
+            ..._.cloneDeep(args)
+        );
     },
     warn: (moduleName: string, ...args: unknown[]) => {
-        console.warn(`%cLAOPLUS :: ${moduleName}`, style, ..._.cloneDeep(args));
+        console.warn(
+            `%cLAOPLUS Stats Reporter :: ${moduleName}`,
+            style,
+            ..._.cloneDeep(args)
+        );
     },
     error: (moduleName: string, ...args: unknown[]) => {
         console.error(
-            `%cLAOPLUS :: ${moduleName}`,
+            `%cLAOPLUS Stats Reporter :: ${moduleName}`,
             style,
             ..._.cloneDeep(args)
         );

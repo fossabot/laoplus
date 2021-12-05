@@ -2,8 +2,6 @@
 import { Config } from "config";
 import { log } from "~/utils";
 import { ErrorMessage } from "./ErrorMessage";
-import { ExplorationList } from "./ExplorationList";
-import { HelpIcon } from "./HelpIcon";
 import { SubmitButton } from "./SumitButton";
 
 const cn = classNames;
@@ -35,12 +33,12 @@ export const ConfigModal = () => {
         watch,
         formState: { errors },
     } = ReactHookForm.useForm<Config["config"]>({
-        defaultValues: unsafeWindow.LAOPLUS.config.config,
+        defaultValues: unsafeWindow.LAOPLUS_STATS_REPORTER.config.config,
     });
 
     const onSubmit = (config: Config["config"]) => {
         log.log("Config Modal", "Config submitted", config);
-        unsafeWindow.LAOPLUS.config.set(config);
+        unsafeWindow.LAOPLUS_STATS_REPORTER.config.set(config);
         setIsOpen(false);
     };
 
@@ -54,15 +52,17 @@ export const ConfigModal = () => {
                 onClick={() => {
                     setIsOpen(true);
                 }}
-                className="absolute bottom-0 left-0"
+                className="absolute bottom-0 right-0"
             >
-                ➕
+                📢
             </button>
 
             <ReactModal
                 appElement={
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    document.querySelector<HTMLDivElement>("#laoplus-root")!
+                    document.querySelector<HTMLDivElement>(
+                        "#laoplus-stats-reporter-root"
+                    )!
                 }
                 shouldCloseOnOverlayClick={false}
                 // .ReactModal__Overlayに指定してるduration
@@ -97,177 +97,50 @@ export const ConfigModal = () => {
                                     id="laoplus-discord-notification"
                                     className="-ml-6 w-4 h-4"
                                     {...register(
-                                        "features.discordNotification.enabled"
+                                        "features.statsReporter.enabled"
                                     )}
                                 />
-                                <span>Discord通知</span>
-                                <HelpIcon href="https://github.com/eai04191/laoplus/wiki/features-discordNotification" />
+                                <span>Stats Reporter</span>
                             </label>
                         </div>
 
                         <div
                             className={cn("flex flex-col gap-1", {
                                 "opacity-50": !watch(
-                                    "features.discordNotification.enabled"
+                                    "features.statsReporter.enabled"
                                 ),
                             })}
                         >
                             <label className="flex gap-2">
                                 <span className="flex-shrink-0">
-                                    Discord Webhook URL:
+                                    Endpoint URL:
                                 </span>
                                 <input
                                     type="text"
                                     disabled={
-                                        !watch(
-                                            "features.discordNotification.enabled"
-                                        )
+                                        !watch("features.statsReporter.enabled")
                                     }
                                     className="min-w-[1rem] flex-1 px-1 border border-gray-500 rounded"
                                     {...register(
-                                        "features.discordNotification.webhookURL",
+                                        "features.statsReporter.endpointURL",
                                         {
                                             required: watch(
-                                                "features.discordNotification.enabled"
+                                                "features.statsReporter.enabled"
                                             ),
-                                            pattern:
-                                                /^https:\/\/(discord\.com|discordapp\.com)\/api\/webhooks\//,
+                                            pattern: /^https:\/\//,
                                         }
                                     )}
                                 />
                             </label>
-                            {errors.features?.discordNotification
-                                ?.webhookURL && (
+                            {errors.features?.statsReporter?.endpointURL && (
                                 <ErrorMessage className="flex gap-1">
                                     <i className="bi bi-exclamation-triangle"></i>
-                                    {errors.features?.discordNotification
-                                        ?.webhookURL?.type === "required" &&
-                                        "Discord通知を利用するにはWebhook URLが必要です"}
-                                    {errors.features?.discordNotification
-                                        ?.webhookURL?.type === "pattern" &&
-                                        "有効なDiscordのWebhook URLではありません"}
-                                </ErrorMessage>
-                            )}
-
-                            <span className="flex gap-2">
-                                <span className="flex-shrink-0">通知項目:</span>
-                                <div className="flex flex-col gap-1">
-                                    <label className="flex gap-2 items-center">
-                                        <input
-                                            type="checkbox"
-                                            className="w-4 h-4"
-                                            disabled={
-                                                !watch(
-                                                    "features.discordNotification.enabled"
-                                                )
-                                            }
-                                            {...register(
-                                                "features.discordNotification.interests.pcDrop"
-                                            )}
-                                        />
-                                        <span className="flex gap-1 items-center">
-                                            キャラクタードロップ
-                                            <span className="text-gray-600 text-xs">
-                                                現在はSS,Sのみ
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <label className="flex gap-2 items-center">
-                                        <input
-                                            type="checkbox"
-                                            className="w-4 h-4"
-                                            disabled={
-                                                !watch(
-                                                    "features.discordNotification.enabled"
-                                                )
-                                            }
-                                            {...register(
-                                                "features.discordNotification.interests.itemDrop"
-                                            )}
-                                        />
-                                        <span className="flex gap-1 items-center">
-                                            アイテムドロップ
-                                            <span className="text-gray-600 text-xs">
-                                                現在はSSのみ
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <label className="flex gap-2 items-center">
-                                        <input
-                                            type="checkbox"
-                                            className="w-4 h-4"
-                                            disabled={
-                                                !watch(
-                                                    "features.discordNotification.enabled"
-                                                )
-                                            }
-                                            {...register(
-                                                "features.discordNotification.interests.exploration"
-                                            )}
-                                        />
-                                        <span>探索完了</span>
-                                    </label>
-                                </div>
-                            </span>
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <label className="flex gap-2 items-center">
-                                <input
-                                    type="checkbox"
-                                    className="-ml-6 w-4 h-4"
-                                    {...register(
-                                        "features.wheelAmplify.enabled"
-                                    )}
-                                />
-                                <span>ホイールスクロール増幅</span>
-                                <HelpIcon href="https://github.com/eai04191/laoplus/wiki/features-wheelAmplify" />
-                            </label>
-                            <span className="flex gap-1 text-gray-600 text-sm">
-                                <i className="bi bi-info-circle"></i>
-                                この設定の変更はページ再読み込み後に反映されます
-                            </span>
-                        </div>
-
-                        <div
-                            className={cn("flex flex-col gap-1", {
-                                "opacity-50": !watch(
-                                    "features.wheelAmplify.enabled"
-                                ),
-                            })}
-                        >
-                            <label className="flex gap-2">
-                                <span className="flex-shrink-0">増幅倍率:</span>
-                                <input
-                                    // numberだと値が二重になる
-                                    type="text"
-                                    disabled={
-                                        !watch("features.wheelAmplify.enabled")
-                                    }
-                                    className="min-w-[1rem] px-1 w-16 border border-gray-500 rounded"
-                                    {...register(
-                                        "features.wheelAmplify.ratio",
-                                        {
-                                            required: watch(
-                                                "features.wheelAmplify.enabled"
-                                            ),
-                                            validate: (value) =>
-                                                // prettier-ignore
-                                                typeof Number(value) === "number"
-                                                && !Number.isNaN(Number(value)),
-                                        }
-                                    )}
-                                />
-                            </label>
-                            {errors.features?.wheelAmplify?.ratio && (
-                                <ErrorMessage className="flex gap-1">
-                                    <i className="bi bi-exclamation-triangle"></i>
-                                    {errors.features?.wheelAmplify?.ratio
+                                    {errors.features?.statsReporter?.endpointURL
                                         ?.type === "required" &&
-                                        "ホイールスクロール増幅を利用するには増幅倍率の指定が必要です"}
-                                    {errors.features?.wheelAmplify?.ratio
-                                        ?.type === "validate" &&
-                                        "増幅倍率は数字で入力してください"}
+                                        "Stats Reporterを利用するにはEndpont URLが必要です"}
+                                    {errors.features?.statsReporter?.endpointURL
+                                        ?.type === "pattern" &&
+                                        "有効なEndpont URLではありません"}
                                 </ErrorMessage>
                             )}
                         </div>
@@ -329,15 +202,6 @@ export const ConfigModal = () => {
                         <SubmitButton>保存</SubmitButton>
                     </footer>
                 </form>
-
-                <div className="absolute bottom-0 inset-x-0 flex items-center mx-auto w-4/5 h-8 bg-gray-200 bg-opacity-80 rounded-t-lg shadow-lg">
-                    <div className="px-2">
-                        <span className="text-xl uppercase">Exploration</span>
-                    </div>
-                    <div className="top-[-2.5rem] absolute flex gap-2 justify-center mx-auto w-full md:gap-6">
-                        <ExplorationList />
-                    </div>
-                </div>
             </ReactModal>
         </>
     );

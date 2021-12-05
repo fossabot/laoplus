@@ -1,6 +1,5 @@
 import { log } from "~/utils";
-import { invoke as invokeExplorationTimer } from "../explorationTimer/invoke";
-import { invoke as invokeDropNotification } from "../dropNotification/invoke";
+import { invoke as invokeStatsReporter } from "../statsReporter/invoke";
 
 const interceptor = (xhr: XMLHttpRequest): void => {
     if (!xhr.responseURL) return;
@@ -19,10 +18,43 @@ const interceptor = (xhr: XMLHttpRequest): void => {
         const invokeProps = { xhr, res, url };
 
         // TODO: このような処理をここに書くのではなく、各種機能がここを購読しに来るように分離したい
-        invokeExplorationTimer(invokeProps);
-        invokeDropNotification(invokeProps);
+        invokeStatsReporter(invokeProps);
     } catch (error) {
         log.error("Interceptor", "Error", error);
+    }
+};
+
+const sendInterceptor = (xhr: XMLHttpRequest, arg: Uint8Array[]) => {
+    // if (!xhr.responseURL) return;
+
+    // const url = new URL(xhr.responseURL);
+    // if (url.host !== "gate.last-origin.com") {
+    //     return;
+    // }
+
+    const text = arg.map((u8) => {
+        return new TextDecoder().decode(u8);
+    })[0];
+    if (!text) return;
+
+    try {
+        const body = JSON.parse(text);
+        log.debug("Send Interceptor", xhr, body);
+
+        if ("StageKeyString" in body) {
+            unsafeWindow.LAOPLUS_STATS_REPORTER.state.CurrentStageKey =
+                body.StageKeyString;
+            log.log(
+                "Send Interceptor",
+                "Set StageKeyString",
+                body.StageKeyString
+            );
+
+            unsafeWindow.LAOPLUS_STATS_REPORTER.state.CurrentWave = 1;
+            log.log("Send Interceptor", "Set CurrentWave", 1);
+        }
+    } catch (error) {
+        // log.error("Send Interceptor", error);
     }
 };
 
@@ -44,4 +76,15 @@ export const initInterceptor = () => {
             open.apply(this, arguments);
         };
     })(XMLHttpRequest.prototype.open);
+
+    (function (send) {
+        XMLHttpRequest.prototype.send = function () {
+            // eslint-disable-next-line prefer-rest-params, @typescript-eslint/no-explicit-any
+            sendInterceptor(this, [...arguments]);
+
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            send.apply(this, arguments);
+        };
+    })(XMLHttpRequest.prototype.send);
 };
