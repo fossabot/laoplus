@@ -4,6 +4,7 @@ import { invoke as invokeExplorationTimer } from "../explorationTimer/invoke";
 import { invoke as invokeDropNotification } from "../dropNotification/invoke";
 import { invoke as invokeAutorunDetection } from "../autorunDetection/invoke";
 import { invoke as invokeFarmingStats } from "../farmingStats/invoke";
+import { invoke as invokeUnitList } from "../unitList/invoke";
 import { invoke as invokeLevelupDetection } from "../levelupDetection/invoke";
 
 interface ExtendedXHR extends XMLHttpRequest {
@@ -46,6 +47,7 @@ const interceptor = (xhr: ExtendedXHR): void => {
         invokeAutorunDetection(invokeProps);
         invokeFarmingStats(invokeProps);
         invokeLevelupDetection(invokeProps);
+        invokeUnitList(invokeProps);
     } catch (error) {
         log.error("Interceptor", "Error", error);
     }
